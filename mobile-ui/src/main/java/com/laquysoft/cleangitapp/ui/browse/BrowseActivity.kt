@@ -1,0 +1,118 @@
+package com.laquysoft.cleangitapp.ui.browse
+
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_browse.*
+import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModel
+import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModelFactory
+import com.laquysoft.cleangitapp.presentation.data.ResourceState
+import com.laquysoft.cleangitapp.presentation.data.Resource
+import com.laquysoft.cleangitapp.presentation.model.UserView
+import com.laquysoft.cleangitapp.ui.R
+import com.laquysoft.cleangitapp.ui.mapper.UserMapper
+import com.laquysoft.cleangitapp.ui.widget.empty.EmptyListener
+import com.laquysoft.cleangitapp.ui.widget.error.ErrorListener
+import javax.inject.Inject
+
+class BrowseActivity: AppCompatActivity() {
+
+    @Inject lateinit var browseAdapter: UserAdapter
+    @Inject lateinit var mapper: UserMapper
+    //@Inject lateinit var viewModelFactory: BrowseUsersViewModelFactory
+    @Inject lateinit var userViewModelFactory: BrowseUsersViewModelFactory
+    //private lateinit var browseUsersViewModel: BrowseUsersViewModel
+    private lateinit var browseUsersViewModel: BrowseUsersViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_browse)
+        AndroidInjection.inject(this)
+
+        //browseUsersViewModel = ViewModelProviders.of(this, viewModelFactory)
+        //        .get(BrowseUsersViewModel::class.java)
+
+        browseUsersViewModel = ViewModelProviders.of(this, userViewModelFactory)
+                .get(BrowseUsersViewModel::class.java)
+
+        setupBrowseRecycler()
+        setupViewListeners()
+    }
+
+    override fun onStart() {
+        super.onStart()
+//        browseUsersViewModel.getUsers().observe(this,
+//                Observer<Resource<List<UserView>>> {
+//                    if (it != null) this.handleDataState(it.status, it.data, it.message) })
+
+        browseUsersViewModel.getUsers().observe(this,
+                Observer<Resource<List<UserView>>> {
+                    if (it != null) this.handleDataState(it.status, it.data, it.message) })
+    }
+
+    private fun setupBrowseRecycler() {
+        recycler_browse.layoutManager = LinearLayoutManager(this)
+        recycler_browse.adapter = browseAdapter
+    }
+
+    private fun handleDataState(resourceState: ResourceState, data: List<UserView>?,
+                                message: String?) {
+        when (resourceState) {
+            ResourceState.LOADING -> setupScreenForLoadingState()
+            ResourceState.SUCCESS -> setupScreenForSuccess(data)
+            ResourceState.ERROR -> setupScreenForError(message)
+        }
+    }
+
+    private fun setupScreenForLoadingState() {
+        progress.visibility = View.VISIBLE
+        recycler_browse.visibility = View.GONE
+        view_empty.visibility = View.GONE
+        view_error.visibility = View.GONE
+    }
+
+    private fun setupScreenForSuccess(data: List<UserView>?) {
+        view_error.visibility = View.GONE
+        progress.visibility = View.GONE
+        if (data!= null && data.isNotEmpty()) {
+            updateListView(data)
+            recycler_browse.visibility = View.VISIBLE
+        } else {
+            view_empty.visibility = View.VISIBLE
+        }
+    }
+
+    private fun updateListView(users: List<UserView>) {
+        browseAdapter.users = users.map { mapper.mapToViewModel(it) }
+        browseAdapter.notifyDataSetChanged()
+    }
+
+    private fun setupScreenForError(message: String?) {
+        progress.visibility = View.GONE
+        recycler_browse.visibility = View.GONE
+        view_empty.visibility = View.GONE
+        view_error.visibility = View.VISIBLE
+    }
+
+    private fun setupViewListeners() {
+        view_empty.emptyListener = emptyListener
+        view_error.errorListener = errorListener
+    }
+
+    private val emptyListener = object : EmptyListener {
+        override fun onCheckAgainClicked() {
+            browseUsersViewModel.fetchUsers()
+        }
+    }
+
+    private val errorListener = object : ErrorListener {
+        override fun onTryAgainClicked() {
+            browseUsersViewModel.fetchUsers()
+        }
+    }
+
+}
