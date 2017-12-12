@@ -87,6 +87,7 @@ dependencies {
     implementation mobileUiDependencies.dagger
     implementation mobileUiDependencies.daggerSupport
 
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile presentationDependencies.archRuntime
     compile presentationDependencies.archExtensions
     compile "android.arch.persistence.room:rxjava2:1.0.0"
@@ -102,16 +103,16 @@ dependencies {
     androidTestImplementation mobileUiTestDependencies.junit
     androidTestImplementation mobileUiTestDependencies.mockito
     androidTestImplementation mobileUiTestDependencies.mockitoAndroid
-    androidTestImplementation (mobileUiTestDependencies.espressoCore) {
+    androidTestImplementation(mobileUiTestDependencies.espressoCore) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestImplementation (mobileUiTestDependencies.androidRunner) {
+    androidTestImplementation(mobileUiTestDependencies.androidRunner) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestImplementation (mobileUiTestDependencies.androidRules) {
+    androidTestImplementation(mobileUiTestDependencies.androidRules) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestImplementation (mobileUiTestDependencies.espressoIntents) {
+    androidTestImplementation(mobileUiTestDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     androidTestImplementation(mobileUiTestDependencies.espressoContrib) {

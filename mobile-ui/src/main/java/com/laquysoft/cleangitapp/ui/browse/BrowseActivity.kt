@@ -6,20 +6,24 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_browse.*
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModel
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModelFactory
-import com.laquysoft.cleangitapp.presentation.data.ResourceState
 import com.laquysoft.cleangitapp.presentation.data.Resource
+import com.laquysoft.cleangitapp.presentation.data.ResourceState
 import com.laquysoft.cleangitapp.presentation.model.UserView
 import com.laquysoft.cleangitapp.ui.R
 import com.laquysoft.cleangitapp.ui.mapper.UserMapper
 import com.laquysoft.cleangitapp.ui.widget.empty.EmptyListener
 import com.laquysoft.cleangitapp.ui.widget.error.ErrorListener
+import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_browse.*
 import javax.inject.Inject
+import android.content.Intent
+import com.laquysoft.cleangitapp.ui.detail.UserDetailActivity
+import com.laquysoft.cleangitapp.ui.detail.UserDetailIntent
 
-class BrowseActivity: AppCompatActivity() {
+
+class BrowseActivity : AppCompatActivity() {
 
     @Inject lateinit var browseAdapter: UserAdapter
     @Inject lateinit var mapper: UserMapper
@@ -45,18 +49,27 @@ class BrowseActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-//        browseUsersViewModel.getUsers().observe(this,
-//                Observer<Resource<List<UserView>>> {
-//                    if (it != null) this.handleDataState(it.status, it.data, it.message) })
-
         browseUsersViewModel.getUsers().observe(this,
                 Observer<Resource<List<UserView>>> {
-                    if (it != null) this.handleDataState(it.status, it.data, it.message) })
+                    if (it != null) this.handleDataState(it.status, it.data, it.message)
+                })
+
+        browseUsersViewModel.getOpenUser().observe( this,
+                Observer<String> {
+                    if (it != null) this.openUser(it)
+                })
+    }
+
+    private fun openUser(userId: String) {
+        startActivity(UserDetailIntent(userId))
     }
 
     private fun setupBrowseRecycler() {
         recycler_browse.layoutManager = LinearLayoutManager(this)
         recycler_browse.adapter = browseAdapter
+        browseAdapter.clickListener = { user ->
+            browseUsersViewModel.onUserClick(mapper.mapToView(user))
+        }
     }
 
     private fun handleDataState(resourceState: ResourceState, data: List<UserView>?,
@@ -78,7 +91,7 @@ class BrowseActivity: AppCompatActivity() {
     private fun setupScreenForSuccess(data: List<UserView>?) {
         view_error.visibility = View.GONE
         progress.visibility = View.GONE
-        if (data!= null && data.isNotEmpty()) {
+        if (data != null && data.isNotEmpty()) {
             updateListView(data)
             recycler_browse.visibility = View.VISIBLE
         } else {

@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.laquysoft.cleangitapp.ui.R
 import com.laquysoft.cleangitapp.ui.model.UserViewModel
+import kotlinx.android.synthetic.main.item_user.view.*
 import javax.inject.Inject
 
 class UserAdapter @Inject constructor(): RecyclerView.Adapter<UserAdapter.ViewHolder>() {
@@ -17,14 +18,7 @@ class UserAdapter @Inject constructor(): RecyclerView.Adapter<UserAdapter.ViewHo
     var users: List<UserViewModel> = arrayListOf()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val user = users[position]
-        holder.nameText.text = user.login
-        //holder.titleText.text = user.title
-
-        Glide.with(holder.itemView.context)
-                .load(user.avatarUrl)
-                .apply(RequestOptions.circleCropTransform())
-                .into(holder.avatarImage)
+        holder.bind(users[position], clickListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,15 +32,16 @@ class UserAdapter @Inject constructor(): RecyclerView.Adapter<UserAdapter.ViewHo
         return users.size
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var avatarImage: ImageView
-        var nameText: TextView
-        var titleText: TextView
+    internal var clickListener: (UserViewModel) -> Unit = { _ ->  }
 
-        init {
-            avatarImage = view.findViewById(R.id.image_avatar)
-            nameText = view.findViewById(R.id.text_name)
-            titleText = view.findViewById(R.id.text_title)
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(user: UserViewModel, clickListener: (UserViewModel) -> Unit) {
+            itemView.text_name.text = user.login
+            Glide.with(itemView.image_avatar.context)
+                    .load(user.avatarUrl)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(itemView.image_avatar)
+            itemView.setOnClickListener { clickListener(user)}
         }
     }
 
