@@ -22,14 +22,10 @@ class UserDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_detail)
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         val userId: String = intent.getStringExtra(EXTRA_USER_ID)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, userId, Snackbar.LENGTH_LONG)
-                    .setAction(userId, null).show()
-        }
     }
 
 }

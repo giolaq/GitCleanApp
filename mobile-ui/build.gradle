@@ -86,6 +86,9 @@ dependencies {
     implementation mobileUiDependencies.glide
     implementation mobileUiDependencies.dagger
     implementation mobileUiDependencies.daggerSupport
+    implementation mobileUiDependencies.cardView
+
+
 
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile presentationDependencies.archRuntime
