@@ -15,8 +15,16 @@ class GitHubRemoteImpl @Inject constructor(private val userService: GitHubServic
                                            private val entityMapper: UserEntityMapper):
         UserRemote {
 
+
+    override fun getUser(login: String?): Flowable<UserEntity> {
+        return userService.getUser(login)
+                .map {
+                     entityMapper.mapFromRemote(it)
+                }
+    }
+
     /**
-     * Retrieve a list of [UserEntity] instances from the [BufferooService].
+     * Retrieve a list of [UserEntity] instances from the [UseroService].
      */
     override fun getUsers(): Flowable<List<UserEntity>> {
         return userService.getUsers()

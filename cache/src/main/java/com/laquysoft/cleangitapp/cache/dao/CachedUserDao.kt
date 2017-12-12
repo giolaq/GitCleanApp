@@ -13,6 +13,9 @@ abstract class CachedUserDao {
     @Query(CacheConstants.QUERY_USERS)
     abstract fun getUsers(): List<CachedUser>
 
+    @Query(CacheConstants.QUERY_USER)
+    abstract fun getUser(login: String?): CachedUser
+
     @Query(CacheConstants.DELETE_ALL_USERS)
     abstract fun clearUsers()
 

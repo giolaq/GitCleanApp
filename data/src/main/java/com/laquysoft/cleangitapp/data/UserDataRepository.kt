@@ -17,6 +17,19 @@ class UserDataRepository @Inject constructor(private val factory: UserDataStoreF
                                              private val userMapper: UserMapper):
         UserRepository {
 
+    override fun getUser(login: String?): Flowable<User> {
+        return factory.retrieveCacheDataStore().isCached()
+                .flatMapPublisher {
+                    factory.retrieveDataStore(it).getUser(login)
+                }
+                .flatMap {
+                    Flowable.just(userMapper.mapFromEntity(it))
+                }
+                .flatMap {
+                    saveUser(it).toSingle { it }.toFlowable()
+                }
+    }
+
     override fun clearUsers(): Completable {
         return factory.retrieveCacheDataStore().clearUsers()
     }
@@ -25,6 +38,10 @@ class UserDataRepository @Inject constructor(private val factory: UserDataStoreF
         val userEntities = mutableListOf<UserEntity>()
         users.map { userEntities.add(userMapper.mapToEntity(it)) }
         return factory.retrieveCacheDataStore().saveUsers(userEntities)
+    }
+
+   override fun saveUser(user: User): Completable {
+        return factory.retrieveCacheDataStore().saveUser(userMapper.mapToEntity(user))
     }
 
     override fun getUsers(): Flowable<List<User>> {

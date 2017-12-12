@@ -6,7 +6,7 @@ import io.reactivex.Single
 import com.laquysoft.cleangitapp.data.model.UserEntity
 
 /**
- * Interface defining methods for the caching of Bufferroos. This is to be implemented by the
+ * Interface defining methods for the caching of User. This is to be implemented by the
  * cache layer, using this interface as a way of communicating.
  */
 interface UserCache {
@@ -21,10 +21,18 @@ interface UserCache {
      */
     fun saveUsers(users: List<UserEntity>): Completable
 
+    fun saveUser(user: UserEntity): Completable
+
     /**
      * Retrieve a list of Users, from the cache.
      */
     fun getUsers(): Flowable<List<UserEntity>>
+
+
+    /**
+     * Retrieve an User, from the cache.
+     */
+    fun getUser(login: String?): Flowable<UserEntity>
 
     /**
      * Check whether there is a list of Users stored in the cache.

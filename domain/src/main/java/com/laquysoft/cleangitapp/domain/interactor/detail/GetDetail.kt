@@ -1,23 +1,24 @@
-package com.laquysoft.cleangitapp.domain.interactor.browse
+package com.laquysoft.cleangitapp.domain.interactor.detail
 
-import io.reactivex.Flowable
 import com.laquysoft.cleangitapp.domain.executor.PostExecutionThread
 import com.laquysoft.cleangitapp.domain.executor.ThreadExecutor
 import com.laquysoft.cleangitapp.domain.interactor.FlowableUseCase
 import com.laquysoft.cleangitapp.domain.model.User
 import com.laquysoft.cleangitapp.domain.repository.UserRepository
+import io.reactivex.Flowable
 import javax.inject.Inject
 
+
 /**
- * Use case used for retreiving a [List] of [User] instances from the [UserRepository]
+ * Use case used for retreiving detail of [User] instances from the [UserRepository]
  */
-open class GetUsers @Inject constructor(val userRepository: UserRepository,
+open class GetDetail @Inject constructor(val userRepository: UserRepository,
                                         threadExecutor: ThreadExecutor,
                                         postExecutionThread: PostExecutionThread):
-        FlowableUseCase<List<User>, Void?>(threadExecutor, postExecutionThread) {
+        FlowableUseCase<User, String?>(threadExecutor, postExecutionThread) {
 
-    public override fun buildUseCaseObservable(params: Void?): Flowable<List<User>> {
-        return userRepository.getUsers()
+    public override fun buildUseCaseObservable(params: String?): Flowable<User> {
+        return userRepository.getUser(params)
     }
 
 }

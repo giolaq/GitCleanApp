@@ -15,6 +15,10 @@ interface UserRepository {
 
     fun saveUsers(users: List<User>): Completable
 
+    fun saveUser(user: User): Completable
+
     fun getUsers(): Flowable<List<User>>
+
+    fun getUser(login: String?): Flowable<User>
 
 }

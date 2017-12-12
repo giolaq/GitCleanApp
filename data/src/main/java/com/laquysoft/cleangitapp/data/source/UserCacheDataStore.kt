@@ -15,6 +15,19 @@ import javax.inject.Inject
 open class UserCacheDataStore @Inject constructor(private val userCache: UserCache) :
         UserDataStore {
 
+
+    override fun saveUser(mapToEntity: UserEntity): Completable {
+        return userCache.saveUser(mapToEntity)
+                .doOnComplete {
+                    userCache.setLastCacheTime(System.currentTimeMillis())
+                }
+    }
+
+
+    override fun getUser(login: String?): Flowable<UserEntity> {
+        return userCache.getUser(login)
+    }
+
     /**
      * Clear all Users from the cache
      */

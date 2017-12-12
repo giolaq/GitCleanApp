@@ -1,12 +1,12 @@
 package com.laquysoft.cleangitapp.cache
 
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
 import com.laquysoft.cleangitapp.cache.db.UsersDatabase
 import com.laquysoft.cleangitapp.cache.mapper.UserEntityMapper
 import com.laquysoft.cleangitapp.data.model.UserEntity
 import com.laquysoft.cleangitapp.data.repository.UserCache
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import javax.inject.Inject
 
 /**
@@ -19,7 +19,26 @@ class UserCacheImpl @Inject constructor(val usersDatabase: UsersDatabase,
                                         private val preferencesHelper: PreferencesHelper) :
         UserCache {
 
+
     private val EXPIRATION_TIME = (60 * 10 * 1000).toLong()
+
+
+    override fun saveUser(user: UserEntity): Completable {
+        return Completable.defer {
+            usersDatabase.cachedUserDao().insertUser(
+                    entityMapper.mapToCached(user))
+            Completable.complete()
+        }
+    }
+
+    override fun getUser(login: String?): Flowable<UserEntity> {
+        return Flowable.defer {
+            Flowable.just(usersDatabase.cachedUserDao().getUser(login))
+        }.map {
+            entityMapper.mapFromCached(it)
+        }
+    }
+
 
     /**
      * Retrieve an instance from the database, used for tests.

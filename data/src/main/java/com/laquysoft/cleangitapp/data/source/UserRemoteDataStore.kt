@@ -15,6 +15,14 @@ import javax.inject.Inject
 open class UserRemoteDataStore @Inject constructor(private val userRemote: UserRemote) :
         UserDataStore {
 
+
+    override fun saveUser(mapToEntity: UserEntity): Completable {
+        throw UnsupportedOperationException()
+    }
+    override fun getUser(login: String?): Flowable<UserEntity> {
+        return userRemote.getUser(login)
+    }
+
     override fun clearUsers(): Completable {
         throw UnsupportedOperationException()
     }
