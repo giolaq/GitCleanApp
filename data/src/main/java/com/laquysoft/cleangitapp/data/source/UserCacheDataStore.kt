@@ -1,5 +1,6 @@
 package com.laquysoft.cleangitapp.data.source
 
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -16,7 +17,7 @@ open class UserCacheDataStore @Inject constructor(private val userCache: UserCac
         UserDataStore {
 
 
-    override fun saveUser(mapToEntity: UserEntity): Completable {
+    override fun saveUser(mapToEntity: UserDetailEntity): Completable {
         return userCache.saveUser(mapToEntity)
                 .doOnComplete {
                     userCache.setLastCacheTime(System.currentTimeMillis())
@@ -24,7 +25,7 @@ open class UserCacheDataStore @Inject constructor(private val userCache: UserCac
     }
 
 
-    override fun getUser(login: String?): Flowable<UserEntity> {
+    override fun getUser(login: String?): Flowable<UserDetailEntity> {
         return userCache.getUser(login)
     }
 

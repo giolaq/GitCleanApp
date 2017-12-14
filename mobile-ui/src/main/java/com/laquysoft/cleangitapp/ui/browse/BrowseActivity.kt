@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModel
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModelFactory
@@ -18,8 +19,6 @@ import com.laquysoft.cleangitapp.ui.widget.error.ErrorListener
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_browse.*
 import javax.inject.Inject
-import android.content.Intent
-import com.laquysoft.cleangitapp.ui.detail.UserDetailActivity
 import com.laquysoft.cleangitapp.ui.detail.UserDetailIntent
 
 
@@ -29,7 +28,7 @@ class BrowseActivity : AppCompatActivity() {
     @Inject lateinit var mapper: UserMapper
     //@Inject lateinit var viewModelFactory: BrowseUsersViewModelFactory
     @Inject lateinit var userViewModelFactory: BrowseUsersViewModelFactory
-    //private lateinit var browseUsersViewModel: BrowseUsersViewModel
+    //private lateinit var browseUsersViewModel: BrowseUsersDetailViewModel
     private lateinit var browseUsersViewModel: BrowseUsersViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +37,7 @@ class BrowseActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
 
         //browseUsersViewModel = ViewModelProviders.of(this, viewModelFactory)
-        //        .get(BrowseUsersViewModel::class.java)
+        //        .get(BrowseUsersDetailViewModel::class.java)
 
         browseUsersViewModel = ViewModelProviders.of(this, userViewModelFactory)
                 .get(BrowseUsersViewModel::class.java)
@@ -105,6 +104,7 @@ class BrowseActivity : AppCompatActivity() {
     }
 
     private fun setupScreenForError(message: String?) {
+        Log.e("BrowseActivity", message)
         progress.visibility = View.GONE
         recycler_browse.visibility = View.GONE
         view_empty.visibility = View.GONE

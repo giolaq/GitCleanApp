@@ -6,6 +6,7 @@ import io.reactivex.subscribers.DisposableSubscriber
 import com.laquysoft.cleangitapp.domain.interactor.browse.GetUsers
 import com.laquysoft.cleangitapp.domain.model.User
 import com.laquysoft.cleangitapp.presentation.data.ResourceState
+import com.laquysoft.cleangitapp.presentation.detail.BrowseUsersDetailViewModel
 import com.laquysoft.cleangitapp.presentation.mapper.UserMapper
 import com.laquysoft.cleangitapp.presentation.model.UserView
 import com.laquysoft.cleangitapp.presentation.test.factory.UserFactory
@@ -29,7 +30,7 @@ class BrowseUsersViewModelTest {
     @Captor
     private lateinit var captor: KArgumentCaptor<DisposableSubscriber<List<User>>>
 
-    private lateinit var usersViewModel: BrowseUsersViewModel
+    private lateinit var usersViewModel: BrowseUsersDetailViewModel
 
     @Before
     fun setUp() {

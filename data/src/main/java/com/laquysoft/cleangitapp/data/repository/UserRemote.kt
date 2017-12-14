@@ -1,5 +1,6 @@
 package com.laquysoft.cleangitapp.data.repository
 
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import io.reactivex.Flowable
 import com.laquysoft.cleangitapp.data.model.UserEntity
 
@@ -16,6 +17,6 @@ interface UserRemote {
  /**
      * Retrieve an Users, from the cache
      */
-    fun getUser(login: String?): Flowable<UserEntity>
+    fun getUser(login: String?): Flowable<UserDetailEntity>
 
 }

@@ -1,5 +1,6 @@
 package com.laquysoft.cleangitapp.data.source
 
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -16,10 +17,10 @@ open class UserRemoteDataStore @Inject constructor(private val userRemote: UserR
         UserDataStore {
 
 
-    override fun saveUser(mapToEntity: UserEntity): Completable {
+    override fun saveUser(mapToEntity: UserDetailEntity): Completable {
         throw UnsupportedOperationException()
     }
-    override fun getUser(login: String?): Flowable<UserEntity> {
+    override fun getUser(login: String?): Flowable<UserDetailEntity> {
         return userRemote.getUser(login)
     }
 

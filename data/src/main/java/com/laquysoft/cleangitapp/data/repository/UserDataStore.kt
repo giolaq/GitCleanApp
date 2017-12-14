@@ -1,5 +1,6 @@
 package com.laquysoft.cleangitapp.data.repository
 
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -18,10 +19,10 @@ interface UserDataStore {
 
     fun getUsers(): Flowable<List<UserEntity>>
 
-    fun getUser(login: String?): Flowable<UserEntity>
+    fun getUser(login: String?): Flowable<UserDetailEntity>
 
     fun isCached(): Single<Boolean>
 
-    fun saveUser(mapToEntity: UserEntity): Completable
+    fun saveUser(mapToEntity: UserDetailEntity): Completable
 
 }

@@ -3,6 +3,7 @@ package com.laquysoft.cleangitapp.domain.repository
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import com.laquysoft.cleangitapp.domain.model.User
+import com.laquysoft.cleangitapp.domain.model.UserDetail
 
 /**
  * Interface defining methods for how the data layer can pass data to and from the Domain layer.
@@ -15,10 +16,10 @@ interface UserRepository {
 
     fun saveUsers(users: List<User>): Completable
 
-    fun saveUser(user: User): Completable
+    fun saveUser(user: UserDetail): Completable
 
     fun getUsers(): Flowable<List<User>>
 
-    fun getUser(login: String?): Flowable<User>
+    fun getUser(login: String?): Flowable<UserDetail>
 
 }

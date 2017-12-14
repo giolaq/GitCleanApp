@@ -1,12 +1,14 @@
 package com.laquysoft.cleangitapp.data
 
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import com.laquysoft.cleangitapp.domain.model.User
-import com.laquysoft.cleangitapp.domain.repository.UserRepository
+import com.laquysoft.cleangitapp.data.mapper.UserDetailMapper
 import com.laquysoft.cleangitapp.data.mapper.UserMapper
 import com.laquysoft.cleangitapp.data.model.UserEntity
 import com.laquysoft.cleangitapp.data.source.UserDataStoreFactory
+import com.laquysoft.cleangitapp.domain.model.User
+import com.laquysoft.cleangitapp.domain.model.UserDetail
+import com.laquysoft.cleangitapp.domain.repository.UserRepository
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import javax.inject.Inject
 
 /**
@@ -14,16 +16,17 @@ import javax.inject.Inject
  * data sources
  */
 class UserDataRepository @Inject constructor(private val factory: UserDataStoreFactory,
-                                             private val userMapper: UserMapper):
+                                             private val userMapper: UserMapper,
+                                             private val userDetailMapper: UserDetailMapper) :
         UserRepository {
 
-    override fun getUser(login: String?): Flowable<User> {
+    override fun getUser(login: String?): Flowable<UserDetail> {
         return factory.retrieveCacheDataStore().isCached()
                 .flatMapPublisher {
                     factory.retrieveDataStore(it).getUser(login)
                 }
                 .flatMap {
-                    Flowable.just(userMapper.mapFromEntity(it))
+                    Flowable.just(userDetailMapper.mapFromEntity(it))
                 }
                 .flatMap {
                     saveUser(it).toSingle { it }.toFlowable()
@@ -40,8 +43,8 @@ class UserDataRepository @Inject constructor(private val factory: UserDataStoreF
         return factory.retrieveCacheDataStore().saveUsers(userEntities)
     }
 
-   override fun saveUser(user: User): Completable {
-        return factory.retrieveCacheDataStore().saveUser(userMapper.mapToEntity(user))
+    override fun saveUser(user: UserDetail): Completable {
+        return factory.retrieveCacheDataStore().saveUser(userDetailMapper.mapToEntity(user))
     }
 
     override fun getUsers(): Flowable<List<User>> {

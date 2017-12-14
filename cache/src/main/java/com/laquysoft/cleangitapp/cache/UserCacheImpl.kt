@@ -1,7 +1,9 @@
 package com.laquysoft.cleangitapp.cache
 
 import com.laquysoft.cleangitapp.cache.db.UsersDatabase
+import com.laquysoft.cleangitapp.cache.mapper.UserDetailEntityMapper
 import com.laquysoft.cleangitapp.cache.mapper.UserEntityMapper
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import com.laquysoft.cleangitapp.data.model.UserEntity
 import com.laquysoft.cleangitapp.data.repository.UserCache
 import io.reactivex.Completable
@@ -16,26 +18,27 @@ import javax.inject.Inject
  */
 class UserCacheImpl @Inject constructor(val usersDatabase: UsersDatabase,
                                         private val entityMapper: UserEntityMapper,
+                                        private val entityUserDetailMapper: UserDetailEntityMapper,
                                         private val preferencesHelper: PreferencesHelper) :
         UserCache {
 
 
-    private val EXPIRATION_TIME = (60 * 10 * 1000).toLong()
+    private val EXPIRATION_TIME = /*(60 * 10 * */1000.toLong()
 
 
-    override fun saveUser(user: UserEntity): Completable {
+    override fun saveUser(user: UserDetailEntity): Completable {
         return Completable.defer {
-            usersDatabase.cachedUserDao().insertUser(
-                    entityMapper.mapToCached(user))
+            usersDatabase.cachedUserDetailsDao().insertUser(
+                    entityUserDetailMapper.mapToCached(user))
             Completable.complete()
         }
     }
 
-    override fun getUser(login: String?): Flowable<UserEntity> {
+    override fun getUser(login: String?): Flowable<UserDetailEntity> {
         return Flowable.defer {
-            Flowable.just(usersDatabase.cachedUserDao().getUser(login))
+            Flowable.just(usersDatabase.cachedUserDetailsDao().getUser(login))
         }.map {
-            entityMapper.mapFromCached(it)
+            entityUserDetailMapper.mapFromCached(it)
         }
     }
 

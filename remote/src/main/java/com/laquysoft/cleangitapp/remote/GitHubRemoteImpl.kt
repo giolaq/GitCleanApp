@@ -1,9 +1,11 @@
 package com.laquysoft.cleangitapp.remote
 
-import io.reactivex.Flowable
-import com.laquysoft.cleangitapp.remote.mapper.UserEntityMapper
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import com.laquysoft.cleangitapp.data.model.UserEntity
 import com.laquysoft.cleangitapp.data.repository.UserRemote
+import com.laquysoft.cleangitapp.remote.mapper.UserDetailEntityMapper
+import com.laquysoft.cleangitapp.remote.mapper.UserEntityMapper
+import io.reactivex.Flowable
 import javax.inject.Inject
 
 /**
@@ -12,19 +14,20 @@ import javax.inject.Inject
  * operations in which data store implementation layers can carry out.
  */
 class GitHubRemoteImpl @Inject constructor(private val userService: GitHubService,
-                                           private val entityMapper: UserEntityMapper):
+                                           private val entityMapper: UserEntityMapper,
+                                           private val entityDetailMapper: UserDetailEntityMapper) :
         UserRemote {
 
 
-    override fun getUser(login: String?): Flowable<UserEntity> {
+    override fun getUser(login: String?): Flowable<UserDetailEntity> {
         return userService.getUser(login)
                 .map {
-                     entityMapper.mapFromRemote(it)
+                    entityDetailMapper.mapFromRemote(it)
                 }
     }
 
     /**
-     * Retrieve a list of [UserEntity] instances from the [UseroService].
+     * Retrieve a list of [UserEntity] instances from the [UserService].
      */
     override fun getUsers(): Flowable<List<UserEntity>> {
         return userService.getUsers()

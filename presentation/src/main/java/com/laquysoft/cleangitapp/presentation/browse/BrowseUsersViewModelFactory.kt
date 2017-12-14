@@ -3,6 +3,7 @@ package com.laquysoft.cleangitapp.presentation.browse
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.laquysoft.cleangitapp.domain.interactor.browse.GetUsers
+import com.laquysoft.cleangitapp.presentation.detail.BrowseUsersDetailViewModel
 import com.laquysoft.cleangitapp.presentation.mapper.UserMapper
 
 open class BrowseUsersViewModelFactory(

@@ -1,5 +1,6 @@
 package com.laquysoft.cleangitapp.data.repository
 
+import com.laquysoft.cleangitapp.data.model.UserDetailEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -21,7 +22,7 @@ interface UserCache {
      */
     fun saveUsers(users: List<UserEntity>): Completable
 
-    fun saveUser(user: UserEntity): Completable
+    fun saveUser(user: UserDetailEntity): Completable
 
     /**
      * Retrieve a list of Users, from the cache.
@@ -32,7 +33,7 @@ interface UserCache {
     /**
      * Retrieve an User, from the cache.
      */
-    fun getUser(login: String?): Flowable<UserEntity>
+    fun getUser(login: String?): Flowable<UserDetailEntity>
 
     /**
      * Check whether there is a list of Users stored in the cache.

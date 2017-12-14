@@ -5,7 +5,7 @@ import com.laquysoft.cleangitapp.data.model.UserEntity
 import javax.inject.Inject
 
 /**
- * Map a [UserModel] to and from a [BufferooEntity] instance when data is moving between
+ * Map a [UserModel] to and from a [UserEntity] instance when data is moving between
  * this later and the Data layer
  */
 open class UserEntityMapper @Inject constructor(): EntityMapper<UserModel, UserEntity> {
