@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.MenuItem
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUserDetailViewModelFactory
 import com.laquysoft.cleangitapp.presentation.data.Resource
 import com.laquysoft.cleangitapp.presentation.data.ResourceState
@@ -69,4 +70,6 @@ class UserDetailActivity : AppCompatActivity() {
 
 
     }
+
+
 }

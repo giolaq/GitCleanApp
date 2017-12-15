@@ -19,7 +19,14 @@
         <activity
             android:name=".detail.UserDetailActivity"
             android:label="@string/title_activity_user_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".browse.BrowseActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".browse.BrowseActivity" />
+
+        </activity>
     </application>
 
 </manifest>
