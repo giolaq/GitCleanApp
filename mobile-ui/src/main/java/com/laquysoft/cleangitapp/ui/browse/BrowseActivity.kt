@@ -2,6 +2,7 @@ package com.laquysoft.cleangitapp.ui.browse
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -13,13 +14,17 @@ import com.laquysoft.cleangitapp.presentation.data.Resource
 import com.laquysoft.cleangitapp.presentation.data.ResourceState
 import com.laquysoft.cleangitapp.presentation.model.UserView
 import com.laquysoft.cleangitapp.ui.R
+import com.laquysoft.cleangitapp.ui.detail.EXTRA_USER_ID
+import com.laquysoft.cleangitapp.ui.detail.UserDetailActivity
+import com.laquysoft.cleangitapp.ui.detail.UserDetailFragment
 import com.laquysoft.cleangitapp.ui.mapper.UserMapper
 import com.laquysoft.cleangitapp.ui.widget.empty.EmptyListener
 import com.laquysoft.cleangitapp.ui.widget.error.ErrorListener
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_browse.*
 import javax.inject.Inject
 import com.laquysoft.cleangitapp.ui.detail.UserDetailIntent
+import kotlinx.android.synthetic.main.activity_user_list.*
+import kotlinx.android.synthetic.main.item_list.*
 
 
 class BrowseActivity : AppCompatActivity() {
@@ -31,14 +36,18 @@ class BrowseActivity : AppCompatActivity() {
     //private lateinit var browseUsersViewModel: BrowseUsersDetailViewModel
     private lateinit var browseUsersViewModel: BrowseUsersViewModel
 
+    private var isTwoPane: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_browse)
+        setContentView(R.layout.activity_user_list)
         AndroidInjection.inject(this)
+        setSupportActionBar(toolbar)
+        toolbar.title = title
 
-        //browseUsersViewModel = ViewModelProviders.of(this, viewModelFactory)
-        //        .get(BrowseUsersDetailViewModel::class.java)
-
+        if (item_detail_container != null) {
+            isTwoPane = true
+        }
         browseUsersViewModel = ViewModelProviders.of(this, userViewModelFactory)
                 .get(BrowseUsersViewModel::class.java)
 
@@ -60,6 +69,20 @@ class BrowseActivity : AppCompatActivity() {
     }
 
     private fun openUser(userId: String) {
+        if (isTwoPane) {
+            val fragment = UserDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_USER_ID, userId)
+                }
+            }
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.item_detail_container, fragment)
+                    .commit()
+        } else {
+            UserDetailIntent(userId)
+        }
+
         startActivity(UserDetailIntent(userId))
     }
 

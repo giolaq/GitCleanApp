@@ -15,6 +15,7 @@ import com.laquysoft.cleangitapp.presentation.model.UserDetailView
 import com.laquysoft.cleangitapp.ui.R
 import com.laquysoft.cleangitapp.ui.mapper.UserDetailMapper
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_item_detail.*
 import kotlinx.android.synthetic.main.activity_user_detail.*
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ fun Context.UserDetailIntent(userId: String): Intent {
     }
 }
 
-private const val EXTRA_USER_ID = "user_id"
+const val EXTRA_USER_ID = "user_id"
 
 class UserDetailActivity : AppCompatActivity() {
 
@@ -36,10 +37,30 @@ class UserDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_detail)
-        //setSupportActionBar(toolbar)
+        setContentView(R.layout.activity_item_detail)
         AndroidInjection.inject(this)
 
+        setSupportActionBar(detail_toolbar)
+
+
+        // Show the Up button in the action bar.
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+        if (savedInstanceState == null) {
+            // Create the detail fragment and add it to the activity
+            // using a fragment transaction.
+            val fragment = UserDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_USER_ID,
+                            intent.getStringExtra(EXTRA_USER_ID))
+                }
+            }
+
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.item_detail_container, fragment)
+                    .commit()
+        }
         //browseUsersViewModel = ViewModelProviders.of(this, viewModelFactory)
         //        .get(BrowseUsersDetailViewModel::class.java)
 
