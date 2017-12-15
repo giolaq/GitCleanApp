@@ -61,8 +61,6 @@ class UserDetailActivity : AppCompatActivity() {
                     .add(R.id.item_detail_container, fragment)
                     .commit()
         }
-        //browseUsersViewModel = ViewModelProviders.of(this, viewModelFactory)
-        //        .get(BrowseUsersDetailViewModel::class.java)
 
         userDetailViewModel = ViewModelProviders.of(this, userViewModelFactory)
                 .get(BrowseUsersDetailViewModel::class.java)
@@ -71,59 +69,4 @@ class UserDetailActivity : AppCompatActivity() {
 
 
     }
-
-    override fun onStart() {
-        super.onStart()
-        userDetailViewModel.getUser(userId).observe(this,
-                Observer<Resource<UserDetailView>> {
-                    if (it != null) this.handleDataState(it.status, it.data, it.message)
-                })
-    }
-
-    private fun handleDataState(resourceState: ResourceState, data: UserDetailView?,
-                                message: String?) {
-        when (resourceState) {
-            ResourceState.LOADING -> setupScreenForLoadingState()
-            ResourceState.SUCCESS -> setupScreenForSuccess(data)
-            ResourceState.ERROR -> setupScreenForError(message)
-        }
-        Log.d("UserDetailActivity", " handlestate " + resourceState)
-    }
-
-    private fun setupScreenForLoadingState() {
-//        progress.visibility = View.VISIBLE
-//        recycler_browse.visibility = View.GONE
-//        view_empty.visibility = View.GONE
-//        view_error.visibility = View.GONE
-    }
-
-    private fun setupScreenForSuccess(data: UserDetailView?) {
-//        view_error.visibility = View.GONE
-//        progress.visibility = View.GONE
-//        if (data != null) {
-//            updateDetailView(data)
-//            recycler_browse.visibility = View.VISIBLE
-//        } else {
-//            view_empty.visibility = View.VISIBLE
-//        }
-        if (data != null) {
-            updateDetailView(data)
-        }
-    }
-
-    private fun setupScreenForError(message: String?) {
-//        progress.visibility = View.GONE
-//        recycler_browse.visibility = View.GONE
-//        view_empty.visibility = View.GONE
-//        view_error.visibility = View.VISIBLE
-        Log.e("UserDetailActivity", " setupScreenForError " + message)
-
-    }
-
-    private fun updateDetailView(userDetail: UserDetailView) {
-        val userDetailView = mapper.mapToViewModel(userDetail)
-        name.text = userDetailView.name
-    }
-
-
 }

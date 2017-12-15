@@ -1,14 +1,25 @@
 package com.laquysoft.cleangitapp.ui.detail
 
-import android.content.Context
-import android.net.Uri
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import com.laquysoft.cleangitapp.presentation.browse.BrowseUserDetailViewModelFactory
+import com.laquysoft.cleangitapp.presentation.data.Resource
+import com.laquysoft.cleangitapp.presentation.data.ResourceState
+import com.laquysoft.cleangitapp.presentation.detail.BrowseUsersDetailViewModel
+import com.laquysoft.cleangitapp.presentation.model.UserDetailView
 import com.laquysoft.cleangitapp.ui.R
+import com.laquysoft.cleangitapp.ui.mapper.UserDetailMapper
+import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.activity_item_detail.*
+import kotlinx.android.synthetic.main.activity_user_detail.*
+import javax.inject.Inject
+
 
 /**
  * A simple [Fragment] subclass.
@@ -20,19 +31,37 @@ import com.laquysoft.cleangitapp.ui.R
  */
 class UserDetailFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
+    private lateinit var userId: String
 
-    private var mListener: OnFragmentInteractionListener? = null
+    @Inject lateinit var mapper: UserDetailMapper
+    @Inject lateinit var userViewModelFactory: BrowseUserDetailViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
+        AndroidSupportInjection.inject(this)
+
+        arguments?.let {
+            if (it.containsKey(EXTRA_USER_ID)) {
+                // Load the dummy content specified by the fragment
+                // arguments. In a real-world scenario, use a Loader
+                // to load content from a content provider.
+                userId = it.getString(EXTRA_USER_ID)
+                activity?.toolbar_layout?.title = userId
+            }
         }
     }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val userDetailViewModel = ViewModelProviders.of(activity, userViewModelFactory).get(BrowseUsersDetailViewModel::class.java)
+        userDetailViewModel.getUser(userId).observe(this,
+                Observer<Resource<UserDetailView>> {
+                    if (it != null) this.handleDataState(it.status, it.data, it.message)
+                })
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,63 +69,51 @@ class UserDetailFragment : Fragment() {
         return inflater!!.inflate(R.layout.fragment_user_detail, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
+    private fun handleDataState(resourceState: ResourceState, data: UserDetailView?,
+                                message: String?) {
+        when (resourceState) {
+            ResourceState.LOADING -> setupScreenForLoadingState()
+            ResourceState.SUCCESS -> setupScreenForSuccess(data)
+            ResourceState.ERROR -> setupScreenForError(message)
+        }
+        Log.d("UserDetailActivity", " handlestate " + resourceState)
+    }
+
+    private fun setupScreenForLoadingState() {
+//        progress.visibility = View.VISIBLE
+//        recycler_browse.visibility = View.GONE
+//        view_empty.visibility = View.GONE
+//        view_error.visibility = View.GONE
+    }
+
+    private fun setupScreenForSuccess(data: UserDetailView?) {
+//        view_error.visibility = View.GONE
+//        progress.visibility = View.GONE
+//        if (data != null) {
+//            updateDetailView(data)
+//            recycler_browse.visibility = View.VISIBLE
+//        } else {
+//            view_empty.visibility = View.VISIBLE
+//        }
+        if (data != null) {
+            updateDetailView(data)
         }
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+    private fun setupScreenForError(message: String?) {
+//        progress.visibility = View.GONE
+//        recycler_browse.visibility = View.GONE
+//        view_empty.visibility = View.GONE
+//        view_error.visibility = View.VISIBLE
+        Log.e("UserDetailActivity", " setupScreenForError " + message)
+
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
+    private fun updateDetailView(userDetail: UserDetailView) {
+        val userDetailView = mapper.mapToViewModel(userDetail)
+        name.text = userDetailView.name
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
 
-    companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UserDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): UserDetailFragment {
-            val fragment = UserDetailFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
-            return fragment
-        }
-    }
-}// Required empty public constructor
+}

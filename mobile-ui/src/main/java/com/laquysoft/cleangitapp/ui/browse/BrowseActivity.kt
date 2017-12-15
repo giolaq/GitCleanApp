@@ -80,10 +80,9 @@ class BrowseActivity : AppCompatActivity() {
                     .replace(R.id.item_detail_container, fragment)
                     .commit()
         } else {
-            UserDetailIntent(userId)
+            startActivity(UserDetailIntent(userId))
         }
 
-        startActivity(UserDetailIntent(userId))
     }
 
     private fun setupBrowseRecycler() {
