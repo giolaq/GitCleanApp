@@ -3,6 +3,7 @@ package com.laquysoft.cleangitapp.presentation.browse
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.laquysoft.cleangitapp.domain.interactor.browse.GetSearchUsers
 import com.laquysoft.cleangitapp.domain.interactor.browse.GetUsers
 import com.laquysoft.cleangitapp.domain.model.User
 import com.laquysoft.cleangitapp.presentation.architecture.SingleLiveEvent
@@ -13,8 +14,8 @@ import com.laquysoft.cleangitapp.presentation.model.UserView
 import io.reactivex.subscribers.DisposableSubscriber
 import javax.inject.Inject
 
-open class BrowseUsersViewModel @Inject internal constructor(
-        private val getUsers: GetUsers,
+open class BrowseSearchUsersViewModel @Inject internal constructor(
+        private val getUsers: GetSearchUsers,
         private val userMapper: UserMapper) : ViewModel() {
 
     private val usersLiveData: MutableLiveData<Resource<List<UserView>>> =
@@ -23,7 +24,7 @@ open class BrowseUsersViewModel @Inject internal constructor(
     private val openUserEvent = SingleLiveEvent<String>()
 
     init {
-        fetchUsers()
+        //fetchUsers()
     }
 
     override fun onCleared() {
@@ -31,7 +32,8 @@ open class BrowseUsersViewModel @Inject internal constructor(
         super.onCleared()
     }
 
-    fun getUsers(): LiveData<Resource<List<UserView>>> {
+    fun getUsers(q: String): LiveData<Resource<List<UserView>>> {
+        fetchSearchUsers(q)
         return usersLiveData
     }
 
@@ -43,14 +45,9 @@ open class BrowseUsersViewModel @Inject internal constructor(
         return openUserEvent
     }
 
-    fun fetchUsers() {
-        usersLiveData.postValue(Resource(ResourceState.LOADING, null, null))
-        return getUsers.execute(UserSubscriber())
-    }
-
     fun fetchSearchUsers(q: String) {
         usersLiveData.postValue(Resource(ResourceState.LOADING, null, null))
-        return getUsers.execute(UserSubscriber())
+        return getUsers.execute(UserSubscriber(), q)
     }
 
     inner class UserSubscriber : DisposableSubscriber<List<User>>() {

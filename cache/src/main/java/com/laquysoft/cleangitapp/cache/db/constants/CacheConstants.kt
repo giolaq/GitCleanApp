@@ -11,6 +11,8 @@ object CacheConstants {
 
     const val QUERY_USER = "SELECT * FROM" + " " + TABLE_NAME + " WHERE login LIKE :login"
 
+    const val QUERY_USER_Q = "SELECT * FROM" + " " + TABLE_NAME + " WHERE login LIKE \':q%\'"
+
     const val DELETE_ALL_USERS = "DELETE FROM" + " " + TABLE_NAME
 
     const val DETAILS_TABLE_NAME = "usersdetails"

@@ -19,6 +19,8 @@ interface UserDataStore {
 
     fun getUsers(): Flowable<List<UserEntity>>
 
+    fun getSearchUsers(q: String?): Flowable<List<UserEntity>>
+
     fun getUser(login: String?): Flowable<UserDetailEntity>
 
     fun isCached(): Single<Boolean>

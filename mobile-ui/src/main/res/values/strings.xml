@@ -6,4 +6,6 @@
     <string name="button_check_again">Check again</string>
     <string name="button_try_again">Try again</string>
     <string name="title_activity_user_detail">UserDetailActivity</string>
+    <string name="search">Search</string>
+    <string name="sort">Sort</string>
 </resources>

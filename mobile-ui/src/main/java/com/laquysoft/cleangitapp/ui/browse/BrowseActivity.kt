@@ -2,12 +2,16 @@ package com.laquysoft.cleangitapp.ui.browse
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import com.laquysoft.cleangitapp.presentation.browse.BrowseSearchUsersViewModel
+import com.laquysoft.cleangitapp.presentation.browse.BrowseSearchUsersViewModelFactory
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModel
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUsersViewModelFactory
 import com.laquysoft.cleangitapp.presentation.data.Resource
@@ -15,16 +19,18 @@ import com.laquysoft.cleangitapp.presentation.data.ResourceState
 import com.laquysoft.cleangitapp.presentation.model.UserView
 import com.laquysoft.cleangitapp.ui.R
 import com.laquysoft.cleangitapp.ui.detail.EXTRA_USER_ID
-import com.laquysoft.cleangitapp.ui.detail.UserDetailActivity
 import com.laquysoft.cleangitapp.ui.detail.UserDetailFragment
+import com.laquysoft.cleangitapp.ui.detail.UserDetailIntent
 import com.laquysoft.cleangitapp.ui.mapper.UserMapper
+import com.laquysoft.cleangitapp.ui.widget.RxSearch
 import com.laquysoft.cleangitapp.ui.widget.empty.EmptyListener
 import com.laquysoft.cleangitapp.ui.widget.error.ErrorListener
 import dagger.android.AndroidInjection
-import javax.inject.Inject
-import com.laquysoft.cleangitapp.ui.detail.UserDetailIntent
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_user_list.*
 import kotlinx.android.synthetic.main.item_list.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 class BrowseActivity : AppCompatActivity() {
@@ -33,8 +39,10 @@ class BrowseActivity : AppCompatActivity() {
     @Inject lateinit var mapper: UserMapper
     //@Inject lateinit var viewModelFactory: BrowseUsersViewModelFactory
     @Inject lateinit var userViewModelFactory: BrowseUsersViewModelFactory
+    @Inject lateinit var userSearchViewModelFactory: BrowseSearchUsersViewModelFactory
     //private lateinit var browseUsersViewModel: BrowseUsersDetailViewModel
     private lateinit var browseUsersViewModel: BrowseUsersViewModel
+    private lateinit var browseSearchUsersViewModel: BrowseSearchUsersViewModel
 
     private var isTwoPane: Boolean = false
 
@@ -50,6 +58,8 @@ class BrowseActivity : AppCompatActivity() {
         }
         browseUsersViewModel = ViewModelProviders.of(this, userViewModelFactory)
                 .get(BrowseUsersViewModel::class.java)
+        browseSearchUsersViewModel = ViewModelProviders.of(this, userSearchViewModelFactory)
+                .get(BrowseSearchUsersViewModel::class.java)
 
         setupBrowseRecycler()
         setupViewListeners()
@@ -61,8 +71,7 @@ class BrowseActivity : AppCompatActivity() {
                 Observer<Resource<List<UserView>>> {
                     if (it != null) this.handleDataState(it.status, it.data, it.message)
                 })
-
-        browseUsersViewModel.getOpenUser().observe( this,
+        browseUsersViewModel.getOpenUser().observe(this,
                 Observer<String> {
                     if (it != null) this.openUser(it)
                 })
@@ -83,6 +92,13 @@ class BrowseActivity : AppCompatActivity() {
             startActivity(UserDetailIntent(userId))
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        getMenuInflater().inflate(R.menu.main_menu, menu)
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        search(searchView)
+        return true
     }
 
     private fun setupBrowseRecycler() {
@@ -150,4 +166,30 @@ class BrowseActivity : AppCompatActivity() {
         }
     }
 
+    private fun search(searchView: SearchView) {
+        searchView.isSubmitButtonEnabled = true
+        RxSearch.fromSearchView(searchView)
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .filter { item -> item.length > 1 }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { query ->
+                    Log.d("BrowseActivity", "query " + query)
+                    browseSearchUsersViewModel.getUsers(query).observe(this,
+                            Observer<Resource<List<UserView>>> {
+                                if (it != null) this.handleDataState(it.status, it.data, it.message)
+                            })
+
+                }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.sort -> sortUserList()
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun sortUserList(): Boolean {
+        browseAdapter.users = browseAdapter.users.sortedBy{ it.login }
+        browseAdapter.notifyDataSetChanged()
+        return true
+    }
 }

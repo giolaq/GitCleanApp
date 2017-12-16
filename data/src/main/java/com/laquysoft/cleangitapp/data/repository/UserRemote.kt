@@ -14,6 +14,8 @@ interface UserRemote {
      * Retrieve a list of Users, from the cache
      */
     fun getUsers(): Flowable<List<UserEntity>>
+
+    fun getSearchUsers(q: String?): Flowable<List<UserEntity>>
  /**
      * Retrieve an Users, from the cache
      */

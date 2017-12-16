@@ -60,4 +60,17 @@ class UserDataRepository @Inject constructor(private val factory: UserDataStoreF
                 }
     }
 
+   override fun getSearchUsers(q: String?): Flowable<List<User>> {
+        return factory.retrieveCacheDataStore().isCached()
+                .flatMapPublisher {
+                    factory.retrieveDataStore(it).getSearchUsers(q)
+                }
+                .flatMap {
+                    Flowable.just(it.map { userMapper.mapFromEntity(it) })
+                }
+                .flatMap {
+                    saveUsers(it).toSingle { it }.toFlowable()
+                }
+    }
+
 }

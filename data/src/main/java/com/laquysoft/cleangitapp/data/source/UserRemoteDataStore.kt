@@ -39,6 +39,10 @@ open class UserRemoteDataStore @Inject constructor(private val userRemote: UserR
         return userRemote.getUsers()
     }
 
+    override fun getSearchUsers(q: String?): Flowable<List<UserEntity>> {
+        return userRemote.getSearchUsers(q)
+    }
+
     override fun isCached(): Single<Boolean> {
         throw UnsupportedOperationException()
     }

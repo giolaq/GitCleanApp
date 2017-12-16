@@ -1,12 +1,12 @@
 package com.laquysoft.cleangitapp.data.source
 
 import com.laquysoft.cleangitapp.data.model.UserDetailEntity
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
 import com.laquysoft.cleangitapp.data.model.UserEntity
 import com.laquysoft.cleangitapp.data.repository.UserCache
 import com.laquysoft.cleangitapp.data.repository.UserDataStore
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import javax.inject.Inject
 
 /**
@@ -51,6 +51,10 @@ open class UserCacheDataStore @Inject constructor(private val userCache: UserCac
      */
     override fun getUsers(): Flowable<List<UserEntity>> {
         return userCache.getUsers()
+    }
+
+    override fun getSearchUsers(q: String?): Flowable<List<UserEntity>> {
+        return userCache.getSearchUsers(q)
     }
 
     /**

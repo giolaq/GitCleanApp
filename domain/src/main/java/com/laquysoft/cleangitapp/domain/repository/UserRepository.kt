@@ -20,6 +20,8 @@ interface UserRepository {
 
     fun getUsers(): Flowable<List<User>>
 
+    fun getSearchUsers(q: String?): Flowable<List<User>>
+
     fun getUser(login: String?): Flowable<UserDetail>
 
 }

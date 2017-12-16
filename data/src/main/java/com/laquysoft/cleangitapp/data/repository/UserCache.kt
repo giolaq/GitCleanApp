@@ -35,6 +35,8 @@ interface UserCache {
      */
     fun getUser(login: String?): Flowable<UserDetailEntity>
 
+    fun getSearchUsers(q: String?): Flowable<List<UserEntity>>
+
     /**
      * Check whether there is a list of Users stored in the cache.
      *

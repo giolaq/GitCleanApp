@@ -17,6 +17,15 @@ class GitHubRemoteImpl @Inject constructor(private val userService: GitHubServic
                                            private val entityMapper: UserEntityMapper,
                                            private val entityDetailMapper: UserDetailEntityMapper) :
         UserRemote {
+    override fun getSearchUsers(q: String?): Flowable<List<UserEntity>> {
+        return userService.getSearchUsers(q)
+                .map { it -> it.items }
+                .map {
+                    val entities = mutableListOf<UserEntity>()
+                    it.forEach { entities.add(entityMapper.mapFromRemote(it)) }
+                    entities
+                }
+    }
 
 
     override fun getUser(login: String?): Flowable<UserDetailEntity> {

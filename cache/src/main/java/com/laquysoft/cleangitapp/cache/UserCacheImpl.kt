@@ -23,6 +23,15 @@ class UserCacheImpl @Inject constructor(val usersDatabase: UsersDatabase,
         UserCache {
 
 
+    override fun getSearchUsers(q: String?): Flowable<List<UserEntity>> {
+        return Flowable.defer {
+            Flowable.just(usersDatabase.cachedUserDao().getUsers())
+        }.map {
+            it.map { entityMapper.mapFromCached(it) }
+        }
+    }
+
+
     private val EXPIRATION_TIME = /*(60 * 10 * */1000.toLong()
 
 
