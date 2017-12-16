@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.laquysoft.cleangitapp.presentation.browse.BrowseUserDetailViewModelFactory
 import com.laquysoft.cleangitapp.presentation.data.Resource
 import com.laquysoft.cleangitapp.presentation.data.ResourceState
@@ -17,7 +19,7 @@ import com.laquysoft.cleangitapp.ui.R
 import com.laquysoft.cleangitapp.ui.mapper.UserDetailMapper
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.activity_item_detail.*
-import kotlinx.android.synthetic.main.activity_user_detail.*
+import kotlinx.android.synthetic.main.fragment_user_detail.*
 import javax.inject.Inject
 
 
@@ -112,6 +114,11 @@ class UserDetailFragment : Fragment() {
     private fun updateDetailView(userDetail: UserDetailView) {
         val userDetailView = mapper.mapToViewModel(userDetail)
         name.text = userDetailView.name
+
+        Glide.with(activity)
+                .load(userDetailView.avatarUrl)
+                .apply(RequestOptions.circleCropTransform())
+                .into(profile_img)
     }
 
 
