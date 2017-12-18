@@ -19,11 +19,11 @@ class UserEntityMapperTest {
 
     @Test
     fun mapFromRemoteMapsData() {
-        val userModel = UserFactory.makeBufferooModel()
-        val userEntity = userEntityMapper.mapFromRemote(bufferooModel)
+        val userModel = UserFactory.makeUserModel()
+        val userEntity = userEntityMapper.mapFromRemote(userModel)
 
         assertEquals(userModel.id, userEntity.id)
-        assertEquals(userModel.loging, userEntity.login)
+        assertEquals(userModel.login, userEntity.login)
         assertEquals(userModel.avatarUrl, userEntity.avatarUrl)
     }
 

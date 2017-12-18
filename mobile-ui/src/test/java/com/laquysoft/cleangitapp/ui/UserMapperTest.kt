@@ -20,8 +20,8 @@ class UserMapperTest {
 
     @Test
     fun mapToViewMapsData() {
-        val userView = UserFactory.makeBufferooView()
-        val userViewModel = userMapper.mapToViewModel(bufferooView)
+        val userView = UserFactory.makeUserView()
+        val userViewModel = userMapper.mapToViewModel(userView)
 
         assertEquals(userView.login, userViewModel.login)
         assertEquals(userView.avatarUrl, userViewModel.avatarUrl)

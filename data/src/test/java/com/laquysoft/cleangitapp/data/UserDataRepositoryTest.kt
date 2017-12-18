@@ -5,6 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import com.laquysoft.cleangitapp.data.factory.UserFactory
+import com.laquysoft.cleangitapp.data.mapper.UserDetailMapper
 import com.laquysoft.cleangitapp.domain.model.User
 import com.laquysoft.cleangitapp.data.mapper.UserMapper
 import com.laquysoft.cleangitapp.data.model.UserEntity
@@ -24,6 +25,7 @@ class UserDataRepositoryTest {
 
     private lateinit var userDataStoreFactory: UserDataStoreFactory
     private lateinit var userMapper: UserMapper
+    private lateinit var userDetailMapper: UserDetailMapper
     private lateinit var userCacheDataStore: UserCacheDataStore
     private lateinit var userRemoteDataStore: UserRemoteDataStore
 
@@ -33,7 +35,7 @@ class UserDataRepositoryTest {
         userMapper = mock()
         userCacheDataStore = mock()
         userRemoteDataStore = mock()
-        userDataRepository = UserDataRepository(userDataStoreFactory, bufferooMapper)
+        userDataRepository = UserDataRepository(userDataStoreFactory, userMapper, userDetailMapper)
         stubUserDataStoreFactoryRetrieveCacheDataStore()
         stubUserDataStoreFactoryRetrieveRemoteDataStore()
     }

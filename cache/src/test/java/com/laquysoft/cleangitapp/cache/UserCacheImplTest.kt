@@ -2,6 +2,7 @@ package com.laquysoft.cleangitapp.cache
 
 import android.arch.persistence.room.Room
 import com.laquysoft.cleangitapp.cache.db.UsersDatabase
+import com.laquysoft.cleangitapp.cache.mapper.UserDetailEntityMapper
 import com.laquysoft.cleangitapp.cache.mapper.UserEntityMapper
 import com.laquysoft.cleangitapp.cache.model.CachedUser
 import com.laquysoft.cleangitapp.cache.test.factory.UserFactory
@@ -19,11 +20,12 @@ class UserCacheImplTest {
     private var usersDatabase = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application,
             UsersDatabase::class.java).allowMainThreadQueries().build()
     private var entityMapper = UserEntityMapper()
+    private var entityDetailMapper = UserDetailEntityMapper()
     private var preferencesHelper = PreferencesHelper(RuntimeEnvironment.application)
 
 
     private val databaseHelper = UserCacheImpl(usersDatabase,
-            entityMapper, preferencesHelper)
+            entityMapper, entityDetailMapper, preferencesHelper)
 
     @Test
     fun clearTablesCompletes() {

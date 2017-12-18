@@ -27,13 +27,13 @@ class BrowseActivityTest {
 
     @Test
     fun activityLaunches() {
-        stubUserRepositoryGetUsers(Flowable.just(BufferooFactory.makeBufferooList(2)))
+        stubUserRepositoryGetUsers(Flowable.just(UserFactory.makeUserList(2)))
         activity.launchActivity(null)
     }
 
     @Test
     fun usersDisplay() {
-        val users = UserFactory.makeBufferooList(1)
+        val users = UserFactory.makeUserList(1)
         stubUserRepositoryGetUsers(Flowable.just(users))
         activity.launchActivity(null)
 
@@ -42,7 +42,7 @@ class BrowseActivityTest {
 
     @Test
     fun usersAreScrollable() {
-        val users = UserFactory.makeBufferooList(20)
+        val users = UserFactory.makeUserList(20)
         stubUserRepositoryGetUsers(Flowable.just(users))
         activity.launchActivity(null)
 

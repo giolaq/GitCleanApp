@@ -48,7 +48,7 @@ class UserCacheDataStoreTest {
     //<editor-fold desc="Get Users">
     @Test
     fun getUsersCompletes() {
-        stubUserCacheGetUsers(Flowable.just(UserFactory.makeBufferooEntityList(2)))
+        stubUserCacheGetUsers(Flowable.just(UserFactory.makeUserEntityList(2)))
         val testObserver = userCacheDataStore.getUsers().test()
         testObserver.assertComplete()
     }

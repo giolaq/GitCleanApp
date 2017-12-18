@@ -7,6 +7,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Flowable
 import com.laquysoft.cleangitapp.remote.test.factory.UserFactory
 import com.laquysoft.cleangitapp.data.model.UserEntity
+import com.laquysoft.cleangitapp.remote.mapper.UserDetailEntityMapper
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +17,7 @@ import org.junit.runners.JUnit4
 class UserRemoteImplTest {
 
     private lateinit var entityMapper: UserEntityMapper
+    private lateinit var entityDetailMapper: UserDetailEntityMapper
     private lateinit var userService: GitHubService
 
     private lateinit var userRemoteImpl: GitHubRemoteImpl
@@ -24,20 +26,20 @@ class UserRemoteImplTest {
     fun setup() {
         entityMapper = mock()
         userService = mock()
-        userRemoteImpl = GitHubRemoteImpl(userService, entityMapper)
+        userRemoteImpl = GitHubRemoteImpl(userService, entityMapper, entityDetailMapper)
     }
 
     //<editor-fold desc="Get Users">
     @Test
     fun getUsersCompletes() {
-        stubUserServiceGetUsers(Flowable.just(BufferooFactory.makeBufferooResponse()))
+        stubUserServiceGetUsers(Flowable.just(UserFactory.makeUserResponse()))
         val testObserver = userRemoteImpl.getUsers().test()
         testObserver.assertComplete()
     }
 
     @Test
     fun getUsersReturnsData() {
-        val userResponse = UserFactory.makeBufferooResponse()
+        val userResponse = UserFactory.makeUserResponse()
         stubUserServiceGetUsers(Flowable.just(userResponse))
         val userEntities = mutableListOf<UserEntity>()
         userResponse.forEach {

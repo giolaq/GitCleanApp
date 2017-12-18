@@ -30,7 +30,7 @@ class BrowseUsersViewModelTest {
     @Captor
     private lateinit var captor: KArgumentCaptor<DisposableSubscriber<List<User>>>
 
-    private lateinit var usersViewModel: BrowseUsersDetailViewModel
+    private lateinit var usersViewModel: BrowseUsersViewModel
 
     @Before
     fun setUp() {
@@ -50,8 +50,8 @@ class BrowseUsersViewModelTest {
     //<editor-fold desc="Success">
     @Test
     fun getUsersReturnsSuccess() {
-        val list = UserFactory.makeBufferooList(2)
-        val viewList = UserFactory.makeBufferooViewList(2)
+        val list = UserFactory.makeUserList(2)
+        val viewList = UserFactory.makeUserViewList(2)
         stubUserMapperMapToView(viewList[0], list[0])
         stubUserMapperMapToView(viewList[1], list[1])
 
@@ -65,8 +65,8 @@ class BrowseUsersViewModelTest {
 
     @Test
     fun getUsersReturnsDataOnSuccess() {
-        val list = UserFactory.makeBufferooList(2)
-        val viewList = UserFactory.makeBufferooViewList(2)
+        val list = UserFactory.makeUserList(2)
+        val viewList = UserFactory.makeUserViewList(2)
 
         stubUserMapperMapToView(viewList[0], list[0])
         stubUserMapperMapToView(viewList[1], list[1])
@@ -81,8 +81,8 @@ class BrowseUsersViewModelTest {
 
     @Test
     fun getUsersReturnsNoMessageOnSuccess() {
-        val list = UserFactory.makeBufferooList(2)
-        val viewList = UserFactory.makeBufferooViewList(2)
+        val list = UserFactory.makeUserList(2)
+        val viewList = UserFactory.makeUserViewList(2)
 
         stubUserMapperMapToView(viewList[0], list[0])
         stubUserMapperMapToView(viewList[1], list[1])

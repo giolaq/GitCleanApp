@@ -38,14 +38,14 @@ class GetUsersTest {
 
     @Test
     fun buildUseCaseObservableCompletes() {
-        stubUserRepositoryGetUsers(Flowable.just(BufferooFactory.makeBufferooList(2)))
+        stubUserRepositoryGetUsers(Flowable.just(UserFactory.makeUserList(2)))
         val testObserver = getUsers.buildUseCaseObservable(null).test()
         testObserver.assertComplete()
     }
 
     @Test
     fun buildUseCaseObservableReturnsData() {
-        val users = UserFactory.makeBufferooList(2)
+        val users = UserFactory.makeUserList(2)
         stubUserRepositoryGetUsers(Flowable.just(users))
         val testObserver = getUsers.buildUseCaseObservable(null).test()
         testObserver.assertValue(users)

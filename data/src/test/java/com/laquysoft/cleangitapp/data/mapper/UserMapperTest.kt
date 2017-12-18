@@ -30,10 +30,10 @@ class UserMapperTest {
 
     @Test
     fun mapToEntityMapsData() {
-        val cachedUser = UserFactory.makeBufferoo()
+        val cachedUser = UserFactory.makeUser()
         val userEntity = userMapper.mapToEntity(cachedUser)
 
-        assertUserDataEquality(userEntity, cachedBufferoo)
+        assertUserDataEquality(userEntity, cachedUser)
     }
 
     private fun assertUserDataEquality(userEntity: UserEntity,
